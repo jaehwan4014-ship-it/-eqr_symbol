@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eqr' Symbol System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#fff;font-family:'Space Mono',monospace;padding:40px 32px;overflow-x:hidden}
+
+.header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;padding-bottom:20px;border-bottom:1px solid #1a1a1a}
+.brand{font-size:30px;font-weight:700;letter-spacing:-1px}
+.sub{font-size:8px;letter-spacing:5px;color:#333;text-transform:uppercase;line-height:2.3}
+
+.tabs{display:flex;margin-bottom:40px;border-bottom:1px solid #1a1a1a}
+.tbtn{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;color:#333;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:4px;text-transform:uppercase;padding:10px 24px 10px 0;cursor:pointer;transition:color .2s,border-color .2s}
+.tbtn.active{color:#fff;border-bottom-color:#fff}
+
+.slbl{font-size:8px;letter-spacing:5px;color:#2a2a2a;text-transform:uppercase;margin-bottom:24px}
+
+/* PATTERN */
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #111;overflow:hidden}
+.pcell{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-right:1px solid #111;border-bottom:1px solid #111;transition:background .5s;overflow:hidden}
+.pcell:nth-child(4n){border-right:none}
+.pcell:nth-last-child(-n+4){border-bottom:none}
+.pcell:hover{background:#0a0a0a}
+.pcell svg{transition:transform 1s cubic-bezier(.16,1,.3,1);flex-shrink:0}
+.pcell:hover svg{transform:rotate(51.4deg)!important}
+
+.pnotes{display:grid;grid-template-columns:1fr 1fr;margin-top:36px;padding-top:22px;border-top:1px solid #111}
+.pnote{padding-right:28px;border-right:1px solid #111}
+.pnote:last-child{border-right:none;padding-right:0;padding-left:28px}
+.ntitle{font-size:8px;letter-spacing:4px;color:#2a2a2a;text-transform:uppercase;margin-bottom:10px}
+.nbody{font-size:10px;color:#444;line-height:2.1}
+
+/* MOTION */
+.mrow{display:flex;align-items:center;gap:40px;padding:40px 0;border-bottom:1px solid #0d0d0d}
+.mrow:last-child{border-bottom:none}
+.sw{width:110px;height:110px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.itag{font-size:8px;letter-spacing:4px;color:#2a2a2a;text-transform:uppercase;margin-bottom:9px}
+.ititle{font-size:14px;font-weight:700;margin-bottom:8px}
+.idesc{font-size:10px;color:#444;line-height:2.2}
+
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:110px;height:110px;flex-shrink:0}
+.fc{display:flex;align-items:center;justify-content:center}
+
+@keyframes spn  {from{transform:rotate(0)}  to{transform:rotate(360deg)}}
+@keyframes spnr {from{transform:rotate(0)}  to{transform:rotate(-360deg)}}
+.s8  {animation:spn  8s   linear infinite}
+.s11 {animation:spn  1.1s linear infinite}
+.sf1 {animation:spn  5s   linear infinite}
+.sf2 {animation:spnr 7s   linear infinite}
+.sf3 {animation:spnr 6s   linear infinite}
+.sf4 {animation:spn  3.8s linear infinite}
+
+.panel{display:none}
+.panel.active{display:block}
+
+.footer{margin-top:48px;padding-top:14px;border-top:1px solid #0d0d0d;display:flex;justify-content:space-between}
+.ftxt{font-size:8px;letter-spacing:3px;color:#1e1e1e;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<!-- 실제 심볼 패스를 hidden SVG defs에 정의 -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="eqr-sym" viewBox="0 0 113.39 113.39">
+      <path fill="white" d="M83.49,57.44c1.53-7.84,14.94-9.87,21.46-11.27,2.06-.39,4.22-.73,6.21-1.12,9.58-1.75-14.75-2.45-16.19-2.21-3.56.09-7.21.43-10.64,1.15-2.96.62-5.84,1.52-8.65,2.57-4,1.5-6.95,2.95-8.95,3.44-.53.13-1.03.21-1.52.16-2.02-.26-1.48-2.75-.93-4.86,1.86-6.25,6.17-13.45,9.39-19.08,1.51-2.76,3.9-6.07,3.51-6.64-.24-.11-1.1.49-2.45,1.59-1.34,1.08-3.18,2.64-5.27,4.22-2.99,2.23-6.61,4.66-10.2,5.37-5.21,1.1-8.46-2.62-10.35-7.03-2.67-6.18-3.83-14.13-4.8-19.87-.73-4.49-1.23-6-1.89.64-.83,8.59-1.21,18.76.89,27.42.97,4.79,4.25,11.8,5.38,15.2,1.21,3.84-.57,4.5-4.42,3.34-6.15-1.92-13.2-6.36-18.69-9.63-2.25-1.27-6.1-4.09-6.46-3.53-.07.28.55,1.18,1.64,2.59,1.07,1.39,2.61,3.27,4.14,5.41,2.17,3.05,4.51,6.73,5.17,10.34,2.14,11.19-15.92,13.38-23.64,14.98-3.38.66-11.06,1.52-1.83,2.42,8.36.73,18.38,1.06,26.76-1.12,2.19-.56,4.27-1.24,6.36-2.01,4.13-1.53,7.17-2.99,9.18-3.36.51-.09,1.04-.14,1.5-.02,1.82.56,1.06,3.28.68,4.85-1.81,6.18-6.06,13.3-9.22,18.91-1.13,2-3.49,5.84-3.32,5.94,0,.06,0,.1.06.12.2.06.95-.5,2.16-1.49,1.48-1.19,3.65-3.01,6.05-4.83,7.37-5.58,16.77-11.07,20.6.44,2.08,5.95,2.8,13.6,3.91,19.6,1.5,8.42,2.31-1.45,2.46-4.34.26-4.67.29-9.66-.26-14.65-.6-6.98-3.58-14.5-5.84-20.48-.51-1.66-1.25-3.63-.04-4.54,1.89-1.07,5.93.74,7.93,1.55,5.64,2.47,11.09,5.87,16.29,8.97,1.17.71,2.45,1.5,3.46,2.08.58.32.97.5,1.18.52.23.02.23-.17,0-.57-.25-.45-.78-1.16-1.5-2.1-3.7-4.92-10.33-12.37-9.31-19.03v-.02Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="header">
+  <div><div class="brand">eqr'</div><div class="sub">Symbol System</div></div>
+  <div class="sub" style="text-align:right">Hyrox Based Running<br>Symbol v1.0</div>
+</div>
+
+<div class="tabs">
+  <button class="tbtn active" onclick="switchTab('pattern',this)">Pattern</button>
+  <button class="tbtn" onclick="switchTab('motion',this)">Motion</button>
+</div>
+
+<!-- PATTERN -->
+<div id="p-pattern" class="panel active">
+  <div class="slbl">All-Over Pattern — Textile / Print Application</div>
+  <div class="pgrid" id="pgrid"></div>
+  <div class="pnotes">
+    <div class="pnote">
+      <div class="ntitle">Rotation Variation</div>
+      <div class="nbody">각 심볼은 고유한 각도로 배치.<br>동일하지 않은 패턴이<br>유기적 움직임을 만든다.</div>
+    </div>
+    <div class="pnote">
+      <div class="ntitle">Opacity Variation</div>
+      <div class="nbody">50–100% 불투명도 조합.<br>깊이감 있는 레이어가<br>평면 패턴을 탈피한다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MOTION -->
+<div id="p-motion" class="panel">
+  <div class="slbl">Motion Concept — Digital / Video Application</div>
+
+  <div class="mrow">
+    <div class="sw">
+      <div class="s8">
+        <svg width="90" height="90" viewBox="0 0 113.39 113.39" xmlns="http://www.w3.org/2000/svg">
+          <use href="#eqr-sym"/>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="itag">Brand Intro</div>
+      <div class="ititle">8sec / 천천히 등장</div>
+      <div class="idesc">로고 인트로 · 로딩 화면<br>존재감 있는 브랜드 선언</div>
+    </div>
+  </div>
+
+  <div class="mrow">
+    <div class="sw">
+      <div class="s11">
+        <svg width="90" height="90" viewBox="0 0 113.39 113.39" xmlns="http://www.w3.org/2000/svg">
+          <use href="#eqr-sym"/>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="itag">Race Energy</div>
+      <div class="ititle">1.1sec / 고속 회전</div>
+      <div class="idesc">레이스 카운트다운 · 피니시<br>피크 인텐시티 표현</div>
+    </div>
+  </div>
+
+  <div class="mrow">
+    <div class="fgrid">
+      <div class="fc sf1">
+        <svg width="46" height="46" viewBox="0 0 113.39 113.39" xmlns="http://www.w3.org/2000/svg"><use href="#eqr-sym"/></svg>
+      </div>
+      <div class="fc sf2">
+        <svg width="46" height="46" viewBox="0 0 113.39 113.39" xmlns="http://www.w3.org/2000/svg"><use href="#eqr-sym"/></svg>
+      </div>
+      <div class="fc sf3">
+        <svg width="46" height="46" viewBox="0 0 113.39 113.39" xmlns="http://www.w3.org/2000/svg"><use href="#eqr-sym"/></svg>
+      </div>
+      <div class="fc sf4">
+        <svg width="46" height="46" viewBox="0 0 113.39 113.39" xmlns="http://www.w3.org/2000/svg"><use href="#eqr-sym"/></svg>
+      </div>
+    </div>
+    <div>
+      <div class="itag">4-Formation</div>
+      <div class="ititle">각자 다른 속도 + 방향</div>
+      <div class="idesc">로고 배열 애니메이션<br>각자의 리듬이 다른<br>개인의 레이스를 표현</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span class="ftxt">eqr' Symbol System v1</span>
+  <span class="ftxt">Hyrox Based Running</span>
+</div>
+
+<script>
+const cells = [
+  {sz:72, rot:0,   op:1},
+  {sz:52, rot:28,  op:.52},
+  {sz:80, rot:-18, op:.9},
+  {sz:60, rot:45,  op:.62},
+  {sz:88, rot:12,  op:1},
+  {sz:48, rot:-38, op:.42},
+  {sz:76, rot:22,  op:.8},
+  {sz:56, rot:-12, op:.58},
+  {sz:84, rot:36,  op:.95},
+  {sz:64, rot:-28, op:.68},
+  {sz:72, rot:16,  op:.82},
+  {sz:50, rot:-44, op:.48},
+];
+
+const grid = document.getElementById('pgrid');
+cells.forEach(c => {
+  const cell = document.createElement('div');
+  cell.className = 'pcell';
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', c.sz);
+  svg.setAttribute('height', c.sz);
+  svg.setAttribute('viewBox', '0 0 113.39 113.39');
+  svg.style.transform = `rotate(${c.rot}deg)`;
+  svg.style.opacity = c.op;
+
+  const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  use.setAttribute('href', '#eqr-sym');
+  svg.appendChild(use);
+  cell.appendChild(svg);
+  grid.appendChild(cell);
+});
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+  document.getElementById('p-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
